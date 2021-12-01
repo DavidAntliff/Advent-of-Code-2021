@@ -3,5 +3,5 @@
 class Tests : public ::testing::Test {};
 
 TEST_F(Tests, test_something) {
-    EXPECT_TRUE(0);
+    EXPECT_TRUE(1);
 }

@@ -35,8 +35,8 @@ include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
 # enable doxygen
-#include(cmake/Doxygen.cmake)
-#enable_doxygen()
+include(cmake/Doxygen.cmake)
+enable_doxygen()
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
@@ -69,7 +69,8 @@ endif()
 if(ENABLE_TESTING)
   enable_testing()
   message("Building Tests. Be sure to check out test/constexpr_tests for constexpr testing")
-  add_subdirectory(test)
+  add_subdirectory(test_gtest)
+  add_subdirectory(test_catch2)
 endif()
 
 if(ENABLE_FUZZING)
