@@ -1,41 +1,72 @@
 #include <functional>
 #include <iostream>
+#include <charconv>
 
 #include <spdlog/spdlog.h>
 #include <docopt/docopt.h>
 
 static constexpr auto USAGE =
-  R"(Naval Fate.
+  R"(Advent of Code 2021.
 
-    Usage:
-          naval_fate ship new <name>...
-          naval_fate ship <name> move <x> <y> [--speed=<kn>]
-          naval_fate ship shoot <x> <y>
-          naval_fate mine (set|remove) <x> <y> [--moored | --drifting]
-          naval_fate (-h | --help)
-          naval_fate --version
- Options:
-          -h --help     Show this screen.
-          --version     Show version.
-          --speed=<kn>  Speed in knots [default: 10].
-          --moored      Moored (anchored) mine.
-          --drifting    Drifting mine.
+    Usage: aoc2021 [options] <day> <part>
+
+    Options:
+        -h, --help    Show help
+        -d, --debug   Show debug output
 )";
+
+extern void day01(int part);
 
 int main(int argc, const char **argv)
 {
-  std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
-    { std::next(argv), std::next(argv, argc) },
-    true,// show help if requested
-    "Naval Fate 2.0");// version string
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
+      { std::next(argv), std::next(argv, argc) },
+      true);// show help if requested
 
-  for (auto const &arg : args) {
-    std::cout << arg.first << "=" << arg.second << std::endl;
-  }
+    for (auto const &arg : args) {
+        std::cout << arg.first << "=" << arg.second << std::endl;
+    }
 
+    if (args["--debug"].asBool()) {
+        spdlog::set_level(spdlog::level::debug);
+    }
 
-  //Use the default logger (stdout, multi-threaded, colored)
-  spdlog::info("Hello, {}!", "World");
+    const auto day = static_cast<int>(args["<day>"].asLong());
+    const auto part = static_cast<int>(args["<part>"].asLong());
+    spdlog::debug("day {}, part {}", day, part);
 
-  fmt::print("Hello, from {}\n", "{fmt}");
+    switch (day) {
+    case 1:
+        day01(part);
+        break;
+    default:
+        spdlog::error("Invalid day {}", day);
+    };
+
+//    const auto day_s = args["<day>"].asString();
+//    const auto part_s = args["<part>"].asString();
+//    int day{}, part{};
+//    auto [day_ptr, day_ec]{ std::from_chars(day_s.data(), day_s.data() + day_s.size(), day) };
+//    auto [part_ptr, part_ec]{ std::from_chars(part_s.data(), part_s.data() + part_s.size(), day) };
+//
+//    if (day_ec == std::errc() && part_ec == std::errc()) {
+//        switch (day) {
+//        case 1:
+//            day01(part);
+//            break;
+//        default:
+//            spdlog::error("Invalid day {}", day);
+//        };
+//    } else {
+//        spdlog::error("Invalid day {} or part {}", day_s, part_s);
+//        return 1;
+//    }
+
+    //
+    //  //Use the default logger (stdout, multi-threaded, colored)
+    //  spdlog::info("Hello, {}!", "World");
+    //
+    //  fmt::print("Hello, from {}\n", "{fmt}");
+
+    return 0;
 }

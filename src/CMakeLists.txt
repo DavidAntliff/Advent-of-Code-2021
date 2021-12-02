@@ -45,12 +45,20 @@ find_package(fmt)
 find_package(spdlog)
 find_package(docopt)
 
-# Generic test that uses conan libs
-add_executable(intro main.cpp)
-target_link_libraries(
-  intro
-  PRIVATE project_options
+file(GLOB DAYSRC day*.cpp)
+#add_executable(aoc2021 main.cpp ${DAYSRC})
+add_library(aoc2021_objects OBJECT ${DAYSRC})
+target_link_libraries(aoc2021_objects
+        PUBLIC project_options
           project_warnings
           docopt::docopt
           fmt::fmt
           spdlog::spdlog)
+
+add_executable(aoc2021 $<TARGET_OBJECTS:aoc2021_objects> main.cpp)
+target_link_libraries(aoc2021
+        PRIVATE project_options
+        project_warnings
+        docopt::docopt
+        fmt::fmt
+        spdlog::spdlog)
