@@ -16,6 +16,20 @@ long count_increases(const std::vector<int> & input) {
     return count;
 }
 
+std::vector<int> sum_sliding_window(const std::vector<int> & input, unsigned long length=3) {
+    std::vector<int> result (input.size() - length + 1);
+    assert(input.size() >= length);
+    auto begin = input.begin();
+    auto end = input.end() - static_cast<long>(length) + 1;
+    auto ot = result.begin();
+    for (auto it = begin; it != end; ++it) {
+        *ot = std::accumulate(it, it + static_cast<long>(length), 0);
+        ++ot;
+    }
+    //::write_to_stdout(result);
+    return result;
+}
+
 namespace {
     void part1() {
         spdlog::info("Part 1");
@@ -27,6 +41,10 @@ namespace {
 
     void part2() {
         spdlog::info("Part 2");
+
+        auto input = read_values_from_stdin<int>();
+        auto window_sums = sum_sliding_window(input, 3);
+        std::cout << count_increases(window_sums) << std::endl;
     }
 }
 
